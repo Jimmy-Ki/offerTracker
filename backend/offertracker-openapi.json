@@ -1,0 +1,1089 @@
+
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "OfferTracker API",
+    "description": "求职管理系统后端API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "OfferTracker Team",
+      "url": "https://github.com/offertracker"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://offertracker-backend.1544718463.workers.dev",
+      "description": "生产环境"
+    },
+    {
+      "url": "http://localhost:8787",
+      "description": "开发环境"
+    }
+  ],
+  "tags": [
+    {
+      "name": "认证",
+      "description": "用户注册登录相关接口"
+    },
+    {
+      "name": "简历管理",
+      "description": "简历上传和管理接口"
+    },
+    {
+      "name": "求职记录",
+      "description": "求职申请记录管理接口"
+    },
+    {
+      "name": "数据统计",
+      "description": "Dashboard数据统计接口"
+    },
+    {
+      "name": "枚举配置",
+      "description": "系统枚举值管理接口"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "健康检查",
+        "description": "检查服务是否正常运行",
+        "tags": ["系统"],
+        "responses": {
+          "200": {
+            "description": "服务正常",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "timestamp": {
+                      "type": "integer",
+                      "example": 1234567890
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/register": {
+      "post": {
+        "summary": "用户注册",
+        "description": "创建新用户账户",
+        "tags": ["认证"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password", "confirmPassword"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "password123"
+                  },
+                  "confirmPassword": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "注册成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "summary": "用户登录",
+        "description": "用户登录获取访问令牌",
+        "tags": ["认证"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me": {
+      "get": {
+        "summary": "获取当前用户信息",
+        "description": "获取当前登录用户的信息",
+        "tags": ["认证"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功获取用户信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/resumes": {
+      "get": {
+        "summary": "获取简历列表",
+        "description": "获取当前用户的所有简历",
+        "tags": ["简历管理"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功获取简历列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Resume"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "创建简历",
+        "description": "创建新的简历记录并获取上传URL",
+        "tags": ["简历管理"],
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["resume_name"],
+                "properties": {
+                  "resume_name": {
+                    "type": "string",
+                    "example": "前端开发简历"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "简历创建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "resume-id"
+                    },
+                    "file_url": {
+                      "type": "string",
+                      "example": "resumes/user-id/resume-id.pdf"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/resumes/{id}": {
+      "patch": {
+        "summary": "更新简历信息",
+        "description": "更新简历的名称信息",
+        "tags": ["简历管理"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "resume_name": {
+                    "type": "string",
+                    "example": "更新后的简历名称"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功"
+          }
+        }
+      },
+      "delete": {
+        "summary": "删除简历",
+        "description": "删除指定的简历",
+        "tags": ["简历管理"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功"
+          }
+        }
+      }
+    },
+    "/api/resumes/{id}/file": {
+      "put": {
+        "summary": "上传简历文件",
+        "description": "上传简历文件到指定的简历记录",
+        "tags": ["简历管理"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "文件上传成功"
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "简历记录不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/resumes/{id}/download": {
+      "get": {
+        "summary": "获取简历下载信息",
+        "description": "获取简历文件的下载信息",
+        "tags": ["简历管理"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取下载信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "file_path": {
+                      "type": "string",
+                      "example": "resumes/user-id/resume-id.pdf"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/applications": {
+      "get": {
+        "summary": "获取求职记录列表",
+        "description": "获取当前用户的所有求职记录",
+        "tags": ["求职记录"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功获取求职记录列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Application"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "创建求职记录",
+        "description": "创建新的求职申请记录",
+        "tags": ["求职记录"],
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "创建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/applications/{id}": {
+      "get": {
+        "summary": "获取单条求职记录",
+        "description": "获取指定的求职记录详情",
+        "tags": ["求职记录"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取求职记录",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "更新求职记录",
+        "description": "更新指定的求职记录",
+        "tags": ["求职记录"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplicationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "删除求职记录",
+        "description": "删除指定的求职记录",
+        "tags": ["求职记录"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功"
+          }
+        }
+      }
+    },
+    "/api/dashboard/summary": {
+      "get": {
+        "summary": "获取Dashboard汇总数据",
+        "description": "获取Dashboard的统计汇总数据",
+        "tags": ["数据统计"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功获取汇总数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/timeline": {
+      "get": {
+        "summary": "获取时间线数据",
+        "description": "获取最近50条求职记录的时间线数据",
+        "tags": ["数据统计"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功获取时间线数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Application"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/insights": {
+      "get": {
+        "summary": "获取洞察数据",
+        "description": "获取高级分析洞察数据",
+        "tags": ["数据统计"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功获取洞察数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "monthly_trend": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "month": {
+                            "type": "string",
+                            "example": "2024-01"
+                          },
+                          "count": {
+                            "type": "integer",
+                            "example": 10
+                          }
+                        }
+                      }
+                    },
+                    "status_processing_time": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "example": "applied"
+                          },
+                          "avg_days": {
+                            "type": "number",
+                            "example": 7.5
+                          }
+                        }
+                      }
+                    },
+                    "channel_success_rate": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "channel": {
+                            "type": "string",
+                            "example": "boss"
+                          },
+                          "success_rate": {
+                            "type": "number",
+                            "example": 25.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/enums": {
+      "get": {
+        "summary": "获取所有枚举类型",
+        "description": "获取系统中所有的枚举类型",
+        "tags": ["枚举配置"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功获取枚举类型",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "status"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/enums/{type}": {
+      "get": {
+        "summary": "获取枚举值",
+        "description": "获取指定类型的枚举值列表",
+        "tags": ["枚举配置"],
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["status", "city", "salary_range", "channel"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功获取枚举值",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnumItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/enums/batch": {
+      "post": {
+        "summary": "批量获取枚举值",
+        "description": "批量获取多个类型的枚举值",
+        "tags": ["枚举配置"],
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["types"],
+                "properties": {
+                  "types": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["status", "city", "salary_range", "channel"]
+                    },
+                    "example": ["status", "city"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功获取批量枚举值",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/EnumItem"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "错误信息"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "jwt_token"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "user-id"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "plan_type": {
+            "type": "string",
+            "enum": ["free", "pro", "team"],
+            "example": "free"
+          },
+          "created_at": {
+            "type": "integer",
+            "example": 1234567890
+          }
+        }
+      },
+      "Resume": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "resume-id"
+          },
+          "user_id": {
+            "type": "string",
+            "example": "user-id"
+          },
+          "resume_name": {
+            "type": "string",
+            "example": "前端开发简历"
+          },
+          "file_url": {
+            "type": "string",
+            "example": "resumes/user-id/resume-id.pdf"
+          },
+          "created_at": {
+            "type": "integer",
+            "example": 1234567890
+          },
+          "updated_at": {
+            "type": "integer",
+            "example": 1234567890
+          }
+        }
+      },
+      "Application": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "application-id"
+          },
+          "user_id": {
+            "type": "string",
+            "example": "user-id"
+          },
+          "resume_id": {
+            "type": "string",
+            "example": "resume-id"
+          },
+          "company_name": {
+            "type": "string",
+            "example": "公司名称"
+          },
+          "position_title": {
+            "type": "string",
+            "example": "职位名称"
+          },
+          "status": {
+            "type": "string",
+            "example": "applied"
+          },
+          "city": {
+            "type": "string",
+            "example": "北京"
+          },
+          "salary_range": {
+            "type": "string",
+            "example": "20k-30k"
+          },
+          "channel": {
+            "type": "string",
+            "example": "boss"
+          },
+          "contact_name": {
+            "type": "string",
+            "example": "联系人"
+          },
+          "contact_email": {
+            "type": "string",
+            "format": "email",
+            "example": "contact@example.com"
+          },
+          "application_date": {
+            "type": "integer",
+            "example": 1234567890
+          },
+          "last_update": {
+            "type": "integer",
+            "example": 1234567890
+          },
+          "interview_date": {
+            "type": "integer",
+            "example": 1234567890
+          },
+          "offer_status": {
+            "type": "string",
+            "example": "accepted"
+          },
+          "rejection_reason": {
+            "type": "string",
+            "example": "拒绝原因"
+          },
+          "notes": {
+            "type": "string",
+            "example": "备注信息"
+          },
+          "custom_fields": {
+            "type": "string",
+            "example": "{}"
+          },
+          "resume_name": {
+            "type": "string",
+            "example": "简历名称"
+          }
+        }
+      },
+      "ApplicationInput": {
+        "type": "object",
+        "properties": {
+          "resume_id": {
+            "type": "string",
+            "example": "resume-id"
+          },
+          "company_name": {
+            "type": "string",
+            "example": "公司名称"
+          },
+          "position_title": {
+            "type": "string",
+            "example": "职位名称"
+          },
+          "status": {
+            "type": "string",
+            "example": "applied"
+          },
+          "city": {
+            "type": "string",
+            "example": "北京"
+          },
+          "salary_range": {
+            "type": "string",
+            "example": "20k-30k"
+          },
+          "channel": {
+            "type": "string",
+            "example": "boss"
+          },
+          "contact_name": {
+            "type": "string",
+            "example": "联系人"
+          },
+          "contact_email": {
+            "type": "string",
+            "format": "email",
+            "example": "contact@example.com"
+          },
+          "application_date": {
+            "type": "integer",
+            "example": 1234567890
+          },
+          "interview_date": {
+            "type": "integer",
+            "example": 1234567890
+          },
+          "offer_status": {
+            "type": "string",
+            "example": "pending"
+          },
+          "rejection_reason": {
+            "type": "string",
+            "example": "拒绝原因"
+          },
+          "notes": {
+            "type": "string",
+            "example": "备注信息"
+          },
+          "custom_fields": {
+            "type": "string",
+            "example": "{}"
+          }
+        }
+      },
+      "DashboardSummary": {
+        "type": "object",
+        "properties": {
+          "status_distribution": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "example": {
+              "applied": 10,
+              "interviewing": 5,
+              "offer": 2,
+              "rejected": 3
+            }
+          },
+          "city_distribution": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "example": {
+              "北京": 8,
+              "上海": 6,
+              "深圳": 4
+            }
+          },
+          "channel_distribution": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "example": {
+              "boss": 12,
+              "lagou": 5,
+              "internal": 3
+            }
+          },
+          "total_applications": {
+            "type": "integer",
+            "example": 20
+          },
+          "success_rate": {
+            "type": "number",
+            "example": 10.0
+          },
+          "average_response_time": {
+            "type": "number",
+            "example": 7.5
+          }
+        }
+      },
+      "EnumItem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "status"
+          },
+          "value": {
+            "type": "string",
+            "example": "applied"
+          },
+          "label": {
+            "type": "string",
+            "example": "已投递"
+          }
+        }
+      }
+    }
+  }
+}

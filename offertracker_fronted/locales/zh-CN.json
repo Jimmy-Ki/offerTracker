@@ -1,0 +1,105 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "发生错误",
+    "success": "成功",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "view": "查看",
+    "add": "添加",
+    "search": "搜索",
+    "filter": "筛选",
+    "logout": "退出登录",
+    "profile": "个人资料"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "email": "邮箱地址",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "signIn": "登录",
+    "signInTo": "登录到 OfferTracker",
+    "createAccount": "创建账户",
+    "alreadyHaveAccount": "已有账户？",
+    "dontHaveAccount": "没有账户？",
+    "signUp": "注册",
+    "signingIn": "正在登录...",
+    "creatingAccount": "正在创建账户...",
+    "passwordsNotMatch": "密码不匹配",
+    "loginFailed": "登录失败，请检查您的凭据",
+    "registerFailed": "注册失败，请重试"
+  },
+  "navigation": {
+    "dashboard": "仪表板",
+    "applications": "申请记录",
+    "resumes": "简历管理",
+    "settings": "设置",
+    "home": "首页"
+  },
+  "dashboard": {
+    "title": "仪表板",
+    "totalApplications": "总申请数",
+    "successRate": "成功率",
+    "avgResponseTime": "平均响应时间",
+    "offers": "录用通知",
+    "applicationStatus": "申请状态",
+    "topCities": "热门城市",
+    "days": "天",
+    "noData": "暂无数据"
+  },
+  "applications": {
+    "title": "我的申请",
+    "addApplication": "添加申请",
+    "company": "公司",
+    "position": "职位",
+    "status": "状态",
+    "lastUpdated": "最后更新",
+    "actions": "操作",
+    "searchPlaceholder": "按公司或职位搜索...",
+    "noApplications": "未找到申请记录",
+    "viewEdit": "查看/编辑",
+    "newApplication": "新建申请"
+  },
+  "resumes": {
+    "title": "我的简历",
+    "uploadResume": "上传简历",
+    "resumeName": "简历名称",
+    "resumeFile": "简历文件",
+    "uploadedResumes": "已上传简历",
+    "upload": "上传",
+    "uploading": "上传中...",
+    "download": "下载",
+    "delete": "删除",
+    "noResumes": "您尚未上传任何简历",
+    "resumeNamePlaceholder": "例如：高级前端开发工程师 v2",
+    "fileTypes": "PDF, DOC, DOCX",
+    "deleteConfirm": "确定要删除此简历吗？"
+  },
+  "settings": {
+    "title": "设置",
+    "myProfile": "我的个人资料",
+    "email": "邮箱",
+    "currentPlan": "当前套餐",
+    "memberSince": "注册时间",
+    "planType": {
+      "free": "免费版",
+      "premium": "高级版"
+    }
+  },
+  "status": {
+    "applied": "已申请",
+    "interviewing": "面试中",
+    "offer": "录用通知",
+    "rejected": "已拒绝",
+    "withdrawn": "已撤回"
+  },
+  "errors": {
+    "generic": "操作失败，请重试",
+    "network": "网络连接错误",
+    "unauthorized": "未授权访问",
+    "notFound": "资源未找到"
+  }
+}

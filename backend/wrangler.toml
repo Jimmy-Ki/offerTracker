@@ -1,0 +1,20 @@
+name = "offertracker-backend"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+main = "src/index.ts"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "offertracker-db"
+database_id = "xxxxxxxxxxxxxxxxxxx"
+
+[[r2_buckets]]
+binding = "RESUMES_BUCKET"
+bucket_name = "offertracker-resumes"
+
+[[kv_namespaces]]
+binding = "ENUMS_KV"
+id = "xxxxxxxxxxxxxxxxxxx"
+
+[vars]
+JWT_SECRET = "your-super-secret-jwt-key-here-change-in-production"

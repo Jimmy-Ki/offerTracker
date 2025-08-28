@@ -1,0 +1,47 @@
+{
+  "name": "offertracker",
+  "version": "1.0.0",
+  "description": "OfferTracker - 智能化求职管理系统",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "offertracker_fronted"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd offertracker_fronted && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd offertracker_fronted && npm run build",
+    "deploy": "npm run deploy:backend && npm run deploy:frontend",
+    "deploy:backend": "cd backend && npm run deploy",
+    "deploy:frontend": "cd offertracker_fronted && npm run deploy",
+    "install:all": "npm install && cd backend && npm install && cd ../offertracker_fronted && npm install",
+    "lint": "eslint backend/src offertracker_fronted/src --ext .ts,.tsx",
+    "format": "prettier --write backend/src offertracker_fronted/src"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5"
+  },
+  "keywords": [
+    "job",
+    "tracker",
+    "recruitment",
+    "cloudflare",
+    "react",
+    "typescript"
+  ],
+  "author": "OfferTracker Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jimmy-Ki/offerTracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Jimmy-Ki/offerTracker/issues"
+  },
+  "homepage": "https://github.com/Jimmy-Ki/offerTracker#readme"
+}
