@@ -6,6 +6,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/Jimmy-Ki/offerTracker)](https://github.com/Jimmy-Ki/offerTracker/issues)
 [![GitHub stars](https://img.shields.io/github/stars/Jimmy-Ki/offerTracker)](https://github.com/Jimmy-Ki/offerTracker/stargazers)
 [![Live Demo](https://img.shields.io/badge/demo-job.jimmyki.com-blue?style=flat)](https://job.jimmyki.com)
+[![Deploy to Cloudflare](https://img.shields.io/badge/deploy-cloudflare-orange?style=flat)](https://dash.cloudflare.com/sign-up)
 
 ## 📑 目录
 
@@ -182,49 +183,83 @@ offerTracker/
 
 ## 🚀 部署指南
 
-### Cloudflare 部署
+### 🚀 一键部署到 Cloudflare
 
-#### 1. 安装 Wrangler CLI
+#### 第一步：获取 Cloudflare 信息
+
+1. **注册 Cloudflare 账户**
+   - 访问 [Cloudflare 注册页面](https://dash.cloudflare.com/sign-up)
+   - 创建免费账户
+
+2. **获取 API 令牌**
+   - 登录 Cloudflare 控制台
+   - 进入 [API 令牌页面](https://dash.cloudflare.com/profile/api-tokens)
+   - 创建新的令牌，选择以下权限：
+     - `Workers Scripts: Edit`
+     - `Workers KV: Edit`
+     - `Account Settings: Read`
+     - `D1: Edit`
+     - `R2: Edit`
+
+3. **获取账户 ID**
+   - 在 Cloudflare 控制台首页找到您的账户 ID
+   - 或者运行: `wrangler whoami`
+
+#### 第二步：手动部署（前后端分离）
+
+**先部署后端：**
 ```bash
-npm install -g wrangler
-wrangler login
+# 进入后端目录
+cd backend
+
+# 安装依赖
+npm install
+
+# 配置 Cloudflare (更新 wrangler.toml 中的数据库ID和KV命名空间ID)
+# 执行数据库迁移
+npx wrangler d1 execute offertracker-db --file=migrations/schema.sql
+
+# 部署后端API
+npm run deploy
 ```
 
-#### 2. 初始化 Cloudflare 资源
+**再部署前端：**
 ```bash
-# 创建数据库
-wrangler d1 create offertracker-db
-wrangler d1 execute offertracker-db --file=backend/migrations/schema.sql
+# 进入前端目录
+cd offertracker_fronted
 
-# 创建R2存储桶
-wrangler r2 bucket create offertracker-resumes
+# 安装依赖
+npm install
 
-# 创建KV命名空间
-wrangler kv namespace create offertracker-enums
+# 构建项目
+npm run build
+
+# 部署到Cloudflare Pages
+npm run deploy
 ```
 
-#### 3. 部署应用
-```bash
-# 部署后端
-cd backend && npm run deploy
+#### 第三步：配置环境变量
 
-# 部署前端
-cd offertracker_fronted && npm run deploy
+在 Cloudflare Pages 控制台中配置前端环境变量：
+- `VITE_API_BASE_URL`: 您的后端API地址 (如: `https://your-backend.workers.dev`)
+- `VITE_S3_BASE_URL`: 您的S3存储地址
+
+#### 替代方案：使用部署脚本
+
+我们提供了便捷的部署脚本：
+
+```bash
+# 使用一键部署脚本（交互式）
+./deploy.sh
+
+# 或者分别部署
+npm run deploy:backend
+npm run deploy:frontend
 ```
 
 ### 自动化部署 (GitHub Actions)
 
-项目配置了 GitHub Actions 工作流，推送到 main 分支时会自动：
-
-1. 运行测试和构建
-2. 部署后端到 Cloudflare Workers
-3. 部署前端到 Cloudflare Pages
-
-#### 所需 GitHub Secrets：
-- `CLOUDFLARE_API_TOKEN`
-- `CLOUDFLARE_ACCOUNT_ID`
-- `VITE_API_BASE_URL`
-- `VITE_S3_BASE_URL`
+项目也支持 GitHub Actions 自动部署，推送到 main 分支时会自动完成部署。
 
 详细部署说明请参考 [DEPLOYMENT.md](./DEPLOYMENT.md)
 
