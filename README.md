@@ -5,8 +5,40 @@
 [![GitHub license](https://img.shields.io/github/license/Jimmy-Ki/offerTracker)](https://github.com/Jimmy-Ki/offerTracker/blob/main/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Jimmy-Ki/offerTracker)](https://github.com/Jimmy-Ki/offerTracker/issues)
 [![GitHub stars](https://img.shields.io/github/stars/Jimmy-Ki/offerTracker)](https://github.com/Jimmy-Ki/offerTracker/stargazers)
+[![Live Demo](https://img.shields.io/badge/demo-job.jimmyki.com-blue?style=flat)](https://job.jimmyki.com)
+
+## 📑 目录
+
+- [✨ 特性](#-特性)
+- [🚀 快速开始](#-快速开始)
+- [🏗️ 技术架构](#️-技术架构)
+- [📁 项目结构](#-项目结构)
+- [🔌 API 接口](#-api-接口)
+- [🚀 部署指南](#-部署指南)
+- [🤝 贡献指南](#-贡献指南)
+- [📝 许可证](#-许可证)
+- [🐛 问题报告](#-问题报告)
+- [🙏 致谢](#-致谢)
+- [📞 联系方式](#-联系方式)
+- [📊 更新日志](#-更新日志)
+
 
 ## ✨ 特性
+
+### 📊 功能规划
+
+| 状态 | 功能模块 | 功能描述 | 实现进度 |
+|------|----------|----------|----------|
+| ✅ 已实现 | 基础框架 | 用户系统、简历上传、求职记录管理 | 100% |
+| ✅ 已实现 | 数据可视化 | Dashboard图表、状态分布、统计分析 | 100% |
+| 🔄 开发中  | 基础提醒 | 面试提醒、状态更新提醒 | 70% |
+| 🔄 开发中 | AI简历解析 | 自动解析简历内容，提取技能和经验 | 30% |
+| 🔄 开发中 | 智能简历管理 | 简历版本对比、优化建议 | 20% |
+| ⏳ 规划中 | AI自动追踪 | AI Agent自动追踪求职进度 | 0% |
+| ⏳ 规划中 | 求职信息匹配 | 爬虫获取职位信息，智能匹配 | 0% |
+| ⏳ 规划中 | AI对话助手 | 求职咨询、面试模拟对话 | 0% |
+| ⏳ 规划中 | 简历自动生成 | AI生成个性化简历 | 0% |
+| ⏳ 规划中 | 在线简历网页 | 可分享的在线简历页面 | 0% |
 
 ### 🧑‍💼 用户系统
 - 用户注册 / 登录 / 登出
@@ -34,6 +66,15 @@
 - 投递后未更新自动提醒
 - 面试时间提醒
 - 简历与岗位匹配度提示（预留 AI 模块）
+
+### 🚀 未来AI功能规划
+- **AI简历解析**: 自动提取简历中的技能、经验、教育背景
+- **智能简历管理**: 版本对比、内容优化建议、ATS兼容性检查
+- **AI自动追踪**: Agent自动监控求职进度，智能提醒
+- **求职信息匹配**: 爬虫整合各大招聘平台，智能推荐职位
+- **AI对话助手**: 求职咨询、面试问题模拟、谈判建议
+- **简历自动生成**: 根据岗位要求AI生成定制化简历
+- **在线简历网页**: 生成可分享的个性化简历页面
 
 ## 🚀 快速开始
 
